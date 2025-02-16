@@ -1,14 +1,6 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
-
-import type { Route } from "./+types/root";
-import stylesheet from "./app.css?url";
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { StyleSheet, Colors } from "./utils/StyleSheet";
+import { Route } from "./routes/+types/home";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -20,11 +12,19 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-  { rel: "stylesheet", href: stylesheet },
+  }
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const styles = StyleSheet.create({
+    root: {
+      backgroundColor: Colors.background,
+      color: Colors.text.primary,
+      minHeight: '100vh',
+      fontFamily: 'Inter, system-ui, sans-serif'
+    }
+  });
+
   return (
     <html lang="en">
       <head>
@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body style={styles.root}>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -47,6 +47,33 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: '4rem',
+      paddingLeft: '1rem',
+      paddingRight: '1rem',
+      margin: '0 auto',
+      maxWidth: '80rem'
+    },
+    title: {
+      color: Colors.primary,
+      fontSize: '2rem',
+      marginBottom: '1rem'
+    },
+    message: {
+      color: Colors.text.secondary,
+      marginBottom: '1.5rem'
+    },
+    stack: {
+      width: '100%',
+      padding: '1rem',
+      overflowX: 'auto',
+      backgroundColor: Colors.primary,
+      color: Colors.text.light,
+      borderRadius: '0.375rem'
+    }
+  });
+
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
@@ -63,11 +90,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main style={styles.container}>
+      <h1 style={styles.title}>{message}</h1>
+      <p style={styles.message}>{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre style={styles.stack}>
           <code>{stack}</code>
         </pre>
       )}
